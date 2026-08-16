@@ -1,0 +1,21 @@
+[
+    {
+        "creatorId": "8920451671",
+        "creatorType": "User",
+        "productId": "STARLIGHTV7",
+        "revoked": false
+    },
+    {
+        "creatorId": "9598474342",
+        "creatorType": "User",
+        "productId": "STARLIGHTV7",
+        "revoked": false
+    },
+    {
+        "creatorId": "87654321",
+        "creatorType": "Group",
+        "productId": "STARLIGHTV7",
+        "ownerUserId": "556677",
+        "revoked": false
+    }
+]
