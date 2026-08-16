@@ -157,7 +157,7 @@ __real_setfenv(1, __fake_env)
 -- ========================================================
 -- 5. PROTOKOL HTTP DOWNLOADER (Target Baru: Salon Starlight)
 -- ========================================================
-local scriptUrl = "isi pake raw github kamu disini"
+local scriptUrl = "https://raw.githubusercontent.com/antilua404/CRACK-STUDIO/refs/heads/main/STARLIGHT/LOADER"
 
 local function fetchSource()
     local requestHandler = (type(request) == "function" and request) or (type(http_request) == "function" and http_request)
