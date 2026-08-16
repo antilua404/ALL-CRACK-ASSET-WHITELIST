@@ -1,0 +1,15 @@
+[
+    {
+        "creatorId": "8996507682",
+        "creatorType": "User",
+        "productId": "ADUYYMUSIC",
+        "revoked": false
+    },
+    {
+        "creatorId": "1088508968",
+        "creatorType": "Group",
+        "productId": "ADUYYMUSIC",
+        "ownerUserId": "556677",
+        "revoked": false
+    }
+]
