@@ -1,0 +1,2722 @@
+local t1 = {}
+local t2 = {}
+local v3 = unpack or table.unpack
+t2.value1 = game:GetService("Players")
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+t2.value2 = game:GetService("MarketplaceService")
+
+local SoundService = game:GetService("SoundService")
+local DataStoreService = game:GetService("DataStoreService")
+
+t2.value3 = game:GetService("ContentProvider")
+t2.value4 = game:GetService("TweenService")
+t2.value5 = game:GetService("HttpService")
+t2.value6 = game:GetService("GroupService")
+
+local v9 = true  
+
+function t2.value38(p1)
+	return true
+end
+t2.value7 = "\n\nLICENSE INVALID\n\nGame ini tidak memiliki lisensi resmi.\nSilakan beli lisensi originalnya hanya di:\n\nALECTRASTUDIO.COM\n\n"
+local AduyMusic = ReplicatedStorage:WaitForChild("AduyService"):WaitForChild("AduyMusic")
+local MusicRemote = AduyMusic:WaitForChild("MusicRemote")
+local MusicConfigurasi = AduyMusic:WaitForChild("MusicConfigurasi")
+local WaitForChild = MusicConfigurasi.WaitForChild
+local WaitForChild2 = MusicRemote.WaitForChild
+t1.value1 = "ConfigMusic"
+local v24 = WaitForChild2(MusicRemote, "MusicAction")
+local WaitForChild3 = MusicRemote.WaitForChild
+t1.value2 = "Settings"
+t2.value8 = WaitForChild3(MusicRemote, "UpdateClientUI")
+
+local lib = require(WaitForChild(MusicConfigurasi, "ConfigMusic"))
+local WaitForChild4 = MusicConfigurasi.WaitForChild
+t1.value3 = false
+t2.value9 = lib
+local lib2 = require(WaitForChild4(MusicConfigurasi, "SongData"))
+
+t1.value1 = t2.value9
+t2.value10 = t1.value1.Notices
+local DataStores = t2.value9.Settings.DataStores
+t2.value11 = DataStoreService:GetDataStore(DataStores.Favorite)
+t1.value2 = DataStores.Volume
+t2.value12 = DataStoreService:GetDataStore(t1.value2)
+t2.value13 = DataStoreService:GetDataStore(DataStores.EQSettings)
+t2.value14 = DataStoreService:GetDataStore(DataStores.DynamicSongs)
+t2.value15 = "GLOBAL_LIBRARY"
+t2.value16 = {}
+t2.value17 = nil
+t2.value18 = {}
+t2.value19 = {}
+t2.value20 = false
+t2.value21 = false
+t2.value22 = false
+t2.value23 = nil
+t2.value24 = nil
+t2.value25 = 0
+t2.value26 = t2.value9.Settings.AutoPlayEnabled ~= false
+t2.value27 = {}
+t2.value28 = {}
+t2.value29 = false
+t2.value30 = {}
+t2.value31 = {}
+t2.value32 = {}
+t2.value33 = {}
+t2.value34 = {}
+t2.value35 = {
+	Active = t1.value3,
+	Voters = {},
+	YesCount = 0,
+	Starter = nil
+}
+t2.value36 = SoundService:FindFirstChild("AduySound")
+
+if not t2.value36 then
+	t2.value36 = Instance.new("Sound")
+	t2.value36.Name = "AduySound"
+	t2.value36.Parent = SoundService
+end
+t2.value37 = SoundService:FindFirstChild("AduyDeckSounds")
+
+if not t2.value37 then
+	t2.value37 = Instance.new("Folder")
+	t2.value37.Name = "AduyDeckSounds"
+	t2.value37.Parent = SoundService
+end
+function t2.value38(p1)
+	if t2.value30[p1.UserId] ~= nil then
+		return t2.value30[p1.UserId]
+	end
+
+	local v42 = false
+	local MusicAdmins = t2.value9.Settings.MusicAdmins
+
+	if type(MusicAdmins) == "table" then
+		for _, v in ipairs(MusicAdmins) do
+			local v46 = type(v) == "number"
+
+			if v46 then
+				v46 = v == p1.UserId
+			end
+
+			if v46 then
+				v42 = true
+
+				break
+			end
+
+			if type(v) == "string" and v:lower() == p1.Name:lower() then
+				v42 = true
+
+				break
+			end
+		end
+	end
+
+	t2.value30[p1.UserId] = v42
+
+	return v42
+end
+function t2.value39(p2)
+	local ok4, result4 = pcall(t2.value2.GetProductInfoAsync, t2.value2, p2)
+
+	if ok4 and result4 then
+		local result4Name = result4.Name
+		local CreatorName = result4.Creator.Name
+		local v52 = result4.AssetTypeId == 3
+
+		if not v52 then
+			v52 = result4.AssetTypeId == 2
+
+			if not v52 then
+				v52 = result4.AssetTypeName == "Audio" or string.find(result4.Name or "", "Sound") ~= nil
+			end
+		end
+
+		return {
+			ID = p2,
+			Name = result4Name,
+			Creator = CreatorName,
+			IsValid = v52
+		}
+	end
+
+	return nil
+end
+t2.value40 = {}
+for _, v in pairs(lib2.Playlists) do
+	for _, v2 in pairs(v) do
+		if type(v2) == "table" and v2.ID then
+			t2.value40[tonumber(v2.ID)] = v2
+		end
+	end
+end
+function t2.value41(p3)
+	return t2.value40[tonumber(p3)]
+end
+function t2.value42(p4)
+	if tostring(p4 or "A"):upper() == "B" then
+		return "B"
+	end
+
+	return "A"
+end
+t2.value43 = nil
+function t2.value44(p5)
+	local DeckPresets = t2.value9.Settings.DeckPresets
+
+	if type(DeckPresets) ~= "table" then
+		return nil
+	end
+
+	for _, v in ipairs(DeckPresets) do
+		if not (type(v) == "table" and v.ID) then
+			continue
+		end
+
+		local str = tostring(v.Key or v.ID)
+
+		if str == tostring(p5) then
+			return v, str
+		end
+	end
+
+	return nil
+end
+t2.value45 = nil
+function t2.value45(p6)
+	return t2.value42(p6) == "A" and 1 - t2.value25 or t2.value25
+end
+function t2.value46(p7, p8)
+	local DeckBaseVolume = p7:GetAttribute("DeckBaseVolume")
+
+	if DeckBaseVolume == nil then
+		DeckBaseVolume = p7.Volume
+	end
+
+	p7.Volume = math.clamp((tonumber(DeckBaseVolume) or 1) * t2.value45(p8), 0, 5)
+end
+t2.value47 = nil
+function t2.value47(p9, p10, p11)
+	if type(p10) ~= "table" then
+		p10 = {}
+	end
+
+	if p10.Volume ~= nil then
+		local clamp = math.clamp
+		local num = tonumber(p10.Volume)
+
+		if not num then
+			num = p9:GetAttribute("DeckBaseVolume") or (p9.Volume or 1)
+		end
+
+		p9:SetAttribute("DeckBaseVolume", clamp(num, 0, 5))
+	end
+
+	if p11 then
+		t2.value46(p9, p11)
+	end
+
+	if p10.Speed ~= nil then
+		p9.PlaybackSpeed = math.clamp(tonumber(p10.Speed) or (p9.PlaybackSpeed or 1), 0.25, 3)
+	end
+
+	if p10.Loop ~= nil then
+		p9.Looped = p10.Loop == true
+	end
+
+	local DeckEQ = p9:FindFirstChild("DeckEQ")
+
+	if not DeckEQ then
+		DeckEQ = Instance.new("EqualizerSoundEffect")
+		DeckEQ.Name = "DeckEQ"
+		DeckEQ.Parent = p9
+	end
+
+	if p10.LowGain ~= nil then
+		DeckEQ.LowGain = math.clamp(tonumber(p10.LowGain) or (DeckEQ.LowGain or 0), -20, 20)
+	end
+
+	if p10.MidGain ~= nil then
+		DeckEQ.MidGain = math.clamp(tonumber(p10.MidGain) or (DeckEQ.MidGain or 0), -20, 20)
+	end
+
+	if p10.HighGain ~= nil then
+		DeckEQ.HighGain = math.clamp(tonumber(p10.HighGain) or (DeckEQ.HighGain or 0), -20, 20)
+	end
+
+	local v78 = p10.EffectsEnabled ~= nil
+
+	if not v78 then
+		v78 = p10.Reverb ~= nil
+
+		if not v78 then
+			v78 = p10.Echo ~= nil
+
+			if not v78 then
+				v78 = p10.Distortion ~= nil or p10.Chorus ~= nil
+			end
+		end
+	end
+
+	if v78 then
+		local v79 = p10.EffectsEnabled ~= false
+		local v80 = math.clamp(tonumber(p10.Reverb) or 0, 0, 1)
+		local v81 = math.clamp(tonumber(p10.Echo) or 0, 0, 1)
+		local v82 = math.clamp(tonumber(p10.Distortion) or 0, 0, 1)
+		local v83 = math.clamp(tonumber(p10.Chorus) or 0, 0, 1)
+		local v84 = p9:FindFirstChild("DeckReverb") or Instance.new("ReverbSoundEffect")
+
+		v84.Name = "DeckReverb"
+		v84.Parent = p9
+
+		local v85 = v79
+
+		if v79 then
+			v85 = v80 > 0
+		end
+
+		v84.Enabled = v85
+		v84.WetLevel = math.clamp(v80 * 20 - 20, -20, 0)
+		v84.DryLevel = 0
+
+		local v86 = p9:FindFirstChild("DeckEcho") or Instance.new("EchoSoundEffect")
+
+		v86.Name = "DeckEcho"
+		v86.Parent = p9
+
+		local v87 = v79
+
+		if v79 then
+			v87 = v81 > 0
+		end
+
+		v86.Enabled = v87
+		v86.Delay = math.clamp(0.08 + v81 * 0.42, 0.08, 0.5)
+		v86.Feedback = math.clamp(v81 * 0.75, 0, 0.75)
+		v86.WetLevel = math.clamp(v81 * 16 - 20, -20, -4)
+		v86.DryLevel = 0
+
+		local v88 = p9:FindFirstChild("DeckDistortion") or Instance.new("DistortionSoundEffect")
+
+		v88.Name = "DeckDistortion"
+		v88.Parent = p9
+
+		local v89 = v79
+
+		if v79 then
+			v89 = v82 > 0
+		end
+
+		v88.Enabled = v89
+		v88.Level = v82
+
+		local DeckChorus = p9:FindFirstChild("DeckChorus")
+
+		if not DeckChorus then
+			DeckChorus = Instance.new("ChorusSoundEffect")
+		end
+
+		DeckChorus.Name = "DeckChorus"
+		DeckChorus.Parent = p9
+
+		if v79 then
+			v79 = v83 > 0
+		end
+
+		DeckChorus.Enabled = v79
+		DeckChorus.Depth = v83
+		DeckChorus.Mix = v83 * 0.8
+		DeckChorus.Rate = 1.5 + v83 * 3
+	end
+end
+function t2.value48(p12)
+	if not p12 then
+		return
+	end
+
+	p12:Stop()
+	p12.TimePosition = 0
+	p12.SoundId = ""
+	p12.PlaybackSpeed = 1
+	p12.Looped = false
+	p12:SetAttribute("DeckBaseVolume", 1)
+	p12.Volume = 1
+
+	local DeckEQ = p12:FindFirstChild("DeckEQ")
+
+	if DeckEQ then
+		DeckEQ.LowGain = 0
+		DeckEQ.MidGain = 0
+		DeckEQ.HighGain = 0
+	end
+
+	for _, v in ipairs({
+		"DeckReverb",
+		"DeckEcho",
+		"DeckDistortion",
+		"DeckChorus"
+		}) do
+		local v4 = p12:FindFirstChild(v)
+
+		if v4 then
+			v4.Enabled = false
+		end
+	end
+end
+function t2.value49(p13)
+	local v70 = t2.value42(p13)
+	local v71 = t2.value37:FindFirstChild("Deck" .. v70)
+
+	if not v71 then
+		v71 = Instance.new("Sound")
+		v71.Name = "Deck" .. v70
+		v71.Volume = 1
+		v71.PlaybackSpeed = 1
+		v71.Parent = t2.value37
+	end
+
+	if v71:GetAttribute("DeckBaseVolume") == nil then
+		v71:SetAttribute("DeckBaseVolume", v71.Volume or 1)
+	end
+
+	t2.value47(v71, {}, v70)
+
+	return v71, v70
+end
+function t2.value43(p14, p15, ...)
+	local v66 = select("#", ...) > 0 and p15.Msg:format(...)
+
+	if not v66 then
+		v66 = p15.Msg
+	end
+
+	local value8 = t2.value8
+	local p15Color = p15.Color
+
+	value8:FireClient(p14, "Notify", {
+		Msg = v66,
+		Color = p15Color
+	})
+end
+function t2.value50(p16)
+	if t2.value32[p16] then
+		return t2.value32[p16]
+	end
+	local v99 = t2.value41(p16)
+	if v99 and v99.Name then
+		local value32 = t2.value32
+		local Name = v99.Name
+		local v102 = v99.Creator or "Unknown"
+
+		value32[p16] = {
+			ID = p16,
+			Name = Name,
+			Creator = v102,
+			Cover = v99.Cover,
+			IsValid = true
+		}
+
+		return t2.value32[p16]
+	end
+	local result5
+	local ok5
+	for i = 1, 3 do
+		ok5, result5 = pcall(t2.value2.GetProductInfoAsync, t2.value2, p16)
+
+		local v106 = ok5
+
+		if ok5 then
+			v106 = result5
+
+			if result5 then
+				v106 = result5.Name and result5.Name ~= ""
+			end
+		end
+
+		if v106 then
+			break
+		end
+
+		if i < 3 then
+			task.wait(1)
+		end
+	end
+	if ok5 then
+		ok5 = result5
+
+		if result5 then
+			ok5 = result5.Name and result5.Name ~= ""
+		end
+	end
+	if ok5 then
+		local value32 = t2.value32
+		local result5Name = result5.Name
+		local v109 = result5.Creator and result5.Creator.Name or "Unknown"
+
+		value32[p16] = {
+			ID = p16,
+			Name = result5Name,
+			Creator = v109,
+			IsValid = true
+		}
+
+		return t2.value32[p16]
+	end
+	task.spawn(function()
+		local n1 = 0
+		local result6
+
+		repeat
+			if not (n1 < 20) then
+				for i = #t2.value16, 1, -1 do
+					local v537 = i
+					local v538 = t2.value16[v537]
+
+					if tonumber(v538.ID) == tonumber(p16) and v538.Name == "Loading..." then
+						local v539
+						for _, player in ipairs(t2.value1:GetPlayers()) do
+							if player.Name == v538.Requester then
+								v539 = player
+
+								break
+							end
+						end
+						table.remove(t2.value16, v537)
+						t2.value8:FireAllClients("UpdateQueue", t2.value16)
+						if v539 then
+							t2.value43(v539, t2.value10.QueueInvalidAudio)
+						end
+					end
+				end
+
+				return
+			end
+
+			n1 += 1
+			task.wait((math.min(n1 * 3, 15)))
+
+			local ok6
+
+			ok6, result6 = pcall(t2.value2.GetProductInfoAsync, t2.value2, p16)
+
+			if ok6 then
+				ok6 = result6
+
+				if result6 then
+					ok6 = result6.Name
+
+					if ok6 then
+						ok6 = result6.Name ~= ""
+					end
+				end
+			end
+		until ok6
+
+		local value32 = t2.value32
+		local v545 = p16
+		local v546 = p16
+		local result6Name = result6.Name
+		local v548 = result6.Creator and result6.Creator.Name or "Unknown"
+
+		value32[v545] = {
+			ID = v546,
+			Name = result6Name,
+			Creator = v548,
+			IsValid = true
+		}
+
+		for i, v in ipairs(t2.value16) do
+			local v551 = i
+
+			if tonumber(v.ID) == tonumber(p16) then
+				t2.value16[v551].Name = result6.Name
+				t2.value16[v551].Creator = result6.Creator and result6.Creator.Name or "Unknown"
+				t2.value8:FireAllClients("UpdateQueue", t2.value16)
+			end
+		end
+	end)
+
+	return nil
+end
+t2.value51 = {}
+for _, v in pairs(lib2.Playlists) do
+	for _, v5 in pairs(v) do
+		if type(v5) == "table" and v5.ID then
+			table.insert(t2.value51, v5)
+		end
+	end
+end
+local function v38(p17)
+	if not p17 then
+		return
+	end
+
+	local v115 = "rbxassetid://" .. tostring(p17.ID)
+
+	for _, player in ipairs(t2.value1:GetPlayers()) do
+		local v118 = player
+
+		task.spawn(function()
+			if v118 and v118.Parent then
+				local v552 = v118
+
+				t2.value8:FireClient(v552, "PreloadSound", v115)
+			end
+		end)
+	end
+end
+function t2.value52(p18)
+	if not p18 then
+		return
+	end
+
+	local SpeedControl = p18.SpeedControl
+
+	if SpeedControl and SpeedControl.Speed then
+		t2.value36.PlaybackSpeed = math.clamp(tonumber(SpeedControl.Speed) or 1, 0.1, 20)
+	end
+end
+function t2.value53(p19, p20, p21, p22)
+	local n2 = 1
+	local v126 = p22 or 3
+	local v127 = n2 < 0
+	local v128 = 1 - n2
+	local g132
+	local v131
+	repeat
+
+		v128 = n2 + v128
+		local v130 = not v127 and v128 <= v126
+		if v127 then
+			v131 = true
+
+			if v126 <= v128 then
+				g132 = true
+			end
+		end
+		if not g132 then
+			v131 = v130
+		end
+		g132 = false
+		if not v131 then
+			return false
+		end
+		local success, result = pcall(p19.SetAsync, p19, p20, p21)
+		if success then
+			return true
+		end
+		local _warn = warn
+		local t4 = { (tostring(result)) }
+		_warn(("[Music] SetAsync(%s) attempt %d failed: %s").format("[Music] SetAsync(%s) attempt %d failed: %s", p20, v128, v3(t4)))
+		if v128 < v126 then
+			task.wait(2)
+		end
+	until not g129
+end
+local function v39(p23)
+	if t2.value33[p23] then
+		t2.value33[p23] = task.cancel(t2.value33[p23])
+	end
+
+	t2.value33[p23] = task.delay(3, function()
+		local v553 = t2.value18[tonumber(p23)]
+
+		if v553 then
+			t2.value53(t2.value11, tostring(p23), v553)
+		end
+
+		t2.value33[p23] = nil
+	end)
+end
+function t2.value54(p24, p25, p26)
+	local v140 = p26 or 3
+
+	for i = 1, v140 do
+		local v142 = i
+		local ok7, result7 = pcall(p24.GetAsync, p24, p25)
+
+		if ok7 then
+			return true, result7
+		end
+
+		local _warn = warn
+		local t5 = { (tostring(result7)) }
+
+		_warn(("[Music] GetAsync(%s) attempt %d failed: %s").format("[Music] GetAsync(%s) attempt %d failed: %s", p25, v142, v3(t5)))
+
+		if v142 < v140 then
+			task.wait(2)
+		end
+	end
+
+	return false, nil
+end
+t2.value55 = nil
+function t2.value56()
+	t2.value53(t2.value13, "GLOBAL_EQ", t2.value27)
+end
+function t2.value57()
+	local v148, v149 = t2.value54(t2.value13, "GLOBAL_EQ")
+
+	if v148 then
+		v148 = typeof(v149) == "table" and next(v149)
+	end
+
+	if v148 then
+		t2.value27 = v149
+		t2.value52(t2.value27)
+	else
+		t2.value27 = {}
+	end
+
+	t2.value29 = true
+end
+function t2.value58()
+	t2.value53(t2.value14, t2.value15, t2.value31)
+end
+function t2.value59()
+	local v163, v164 = t2.value54(t2.value14, t2.value15)
+
+	if v163 then
+		v163 = typeof(v164) == "table"
+	end
+
+	if v163 then
+		local _ipairs = ipairs
+
+		for _, v167 in _ipairs(v164) do
+			local v168 = v167
+
+			if v167 then
+				v168 = v167.ID and v167.Category
+			end
+
+			if v168 then
+				table.insert(t2.value31, {
+					ID = v167.ID,
+					Name = v167.Name,
+					Speed = v167.Speed,
+					Category = v167.Category,
+					Cover = v167.Cover
+				})
+				table.insert(t2.value51, {
+					ID = v167.ID,
+					Name = v167.Name,
+					PlaybackSpeed = v167.Speed,
+					Cover = v167.Cover
+				})
+				_ipairs = t2.value40
+				_ipairs[tonumber(v167.ID)] = {
+					ID = tonumber(v167.ID),
+					Name = v167.Name,
+					PlaybackSpeed = v167.Speed,
+					Cover = v167.Cover
+				}
+			end
+		end
+	end
+end
+t2.value60 = nil
+function t2.value61(p27, ...)
+	local v111 = select("#", ...) > 0 and p27.Msg:format(...)
+
+	if not v111 then
+		v111 = p27.Msg
+	end
+
+	local value8 = t2.value8
+	local p27Color = p27.Color
+
+	value8:FireAllClients("Notify", {
+		Msg = v111,
+		Color = p27Color
+	})
+end
+t2.value55 = {}
+function t2.value62(p28, p29, p30, p31)
+	if not t2.value9.Settings.AutoFavoriteOnRequest then
+		return
+	end
+
+	local timestamp = os.time()
+
+	if t2.value55[p28.UserId] and timestamp - t2.value55[p28.UserId] < 5 then
+		return
+	end
+
+	local UserId = p28.UserId
+
+	t2.value55[UserId] = timestamp
+
+	local v156 = t2.value18[p28.UserId]
+
+	if not v156 then
+		return
+	end
+
+	local num = tonumber(p29)
+
+	for _, v in ipairs(v156) do
+		if num == tonumber(v.ID) then
+			return
+		end
+	end
+
+	local insert = table.insert
+	local v161 = p30 or "Unknown"
+	local v162 = p31 or "Unknown"
+
+	insert(v156, {
+		ID = num,
+		Name = v161,
+		Creator = v162
+	})
+	t2.value8:FireClient(p28, "UpdateFavorites", v156)
+	t2.value43(p28, t2.value10.FavAutoAdded, p30 or "Unknown")
+end
+t2.value60 = nil
+function t2.value63(p32)
+
+	if t2.value35.Active then
+		t2.value35.Active = false
+		t2.value8:FireAllClients("HideSkipVote")
+	end
+	local v171 = not p32.Name
+	if not v171 then
+		v171 = p32.Name == "Loading..." or p32.Name == ""
+	end
+	if v171 then
+		local v172 = t2.value50((tonumber(p32.ID)))
+
+		if v172 then
+			p32.Name = v172.Name
+			local v173 = p32.Creator ~= "Loading..." and p32.Creator
+			if not v173 then
+				v173 = v172.Creator
+			end
+			p32.Creator = v173
+			if p32.Cover == nil then
+				p32.Cover = v172.Cover
+			end
+		else
+			p32.Name = "Song " .. tostring(p32.ID)
+		end
+
+		if p32.Creator == "Loading..." or not p32.Creator then
+			p32.Creator = v172 and v172.Creator or "Unknown"
+		end
+	end
+	if p32.Cover == nil then
+		local v172b = t2.value50((tonumber(p32.ID)))
+
+		if v172b then
+			p32.Cover = v172b.Cover
+		end
+	end
+	t2.value36:Stop()
+	t2.value20 = true
+	t2.value36.SoundId = ""
+	t2.value36.TimePosition = 0
+	task.wait()
+	t2.value36.SoundId = "rbxassetid://" .. tostring(p32.ID)
+	v38(p32)
+	pcall(t2.value3.PreloadAsync, t2.value3, { t2.value36 })
+	local v174 = not t2.value34[tonumber(p32.ID)]
+	local v175 = t2.value9.Settings.SongLoadTimeout or 3
+	if v174 then
+		v175 = math.max(v175, 12)
+	end
+	local v176 = os.clock() + v175
+	local v177 = false
+	repeat
+		task.wait(0.3)
+
+		local v178 = v174
+
+		if v174 then
+			v178 = not v177
+
+			if v178 then
+				v178 = not t2.value36.IsLoaded and os.clock() > v176 - v175 * 0.5
+			end
+		end
+
+		if v178 then
+			v177 = true
+			pcall(t2.value3.PreloadAsync, t2.value3, { t2.value36 })
+		end
+
+		local v179 = t2.value36.IsLoaded and (t2.value36.TimeLength or 0) > 0
+
+		if not v179 then
+			v179 = v176 <= os.clock()
+		end
+	until v179
+	if not t2.value36.IsLoaded or (t2.value36.TimeLength or 0) <= 0 then
+		warn("[Music] Failed to load in " .. v175 .. "s: " .. tostring(p32.ID))
+
+		if p32.Requester then
+			local p32Requester = t2.value1:FindFirstChild(p32.Requester)
+
+			if p32Requester then
+				t2.value43(p32Requester, t2.value10.SongFailedLoad)
+			end
+		end
+
+		t2.value20 = false
+		task.wait(1)
+		t2.value60()
+
+		return
+	end
+	local v181 = p32.PlaybackSpeed or 1
+	local v182 = t2.value27.SpeedControl and t2.value27.SpeedControl.Speed
+	local v183 = math.clamp(v181 == 1 and v182 and v182 or v181, 0.1, 20)
+	t2.value36.PlaybackSpeed = v183
+	local TimeLength = t2.value36.TimeLength
+	local v185 = TimeLength / v183
+	t2.value17 = p32
+	t2.value34[tonumber(p32.ID)] = true
+	local value8 = t2.value8
+	local ID = p32.ID
+	local p32Name = p32.Name
+	local Creator = p32.Creator
+	local FireAllClients = value8.FireAllClients
+	local Requester = p32.Requester
+	FireAllClients(value8, "NewSong", {
+		ID = ID,
+		Name = p32Name,
+		Duration = TimeLength,
+		EffectiveDuration = v185,
+		Creator = Creator or "Unknown",
+		PlaybackSpeed = v183,
+		Requester = Requester,
+		Cover = p32.Cover
+	})
+	task.wait(0.5)
+	t2.value36:Play()
+	t2.value20 = false
+end
+function t2.value60()
+	if t2.value20 then
+		return
+	end
+
+	if t2.value22 then
+		t2.value36:Stop()
+		t2.value36.SoundId = ""
+		t2.value17 = nil
+		t2.value8:FireAllClients("NewSong", nil)
+
+		return
+	end
+
+	t2.value20 = true
+	t2.value17 = nil
+
+	if #t2.value16 > 0 then
+		local v192 = table.remove(t2.value16, 1)
+
+		t2.value8:FireAllClients("UpdateQueue", t2.value16)
+
+		if v192.Requester then
+			local Requester = t2.value1:FindFirstChild(v192.Requester)
+
+			if Requester then
+				t2.value43(Requester, t2.value10.SongNowPlaying, v192.Name)
+			end
+		end
+
+		t2.value63(v192)
+
+		return
+	end
+
+	if t2.value26 then
+		if #t2.value51 == 0 then
+			t2.value20 = false
+
+			return
+		end
+
+		local random = math.random
+		local v195 = #t2.value51
+		local v196 = t2.value51[random(1, v195)]
+		local v197 = t2.value39(v196.ID)
+
+		if v197 then
+			v197.Name = v196.Name or v197.Name
+			v197.PlaybackSpeed = v196.PlaybackSpeed or 1
+			v197.Cover = v196.Cover
+			t2.value63(v197)
+
+			return
+		end
+
+		t2.value20 = false
+		task.wait(1)
+		t2.value60()
+
+		return
+	end
+
+	t2.value36:Stop()
+	t2.value36.SoundId = ""
+	t2.value8:FireAllClients("NewSong", nil)
+	t2.value20 = false
+end
+t2.value64 = {}
+t2.value65 = {
+	A = false,
+	B = false
+}
+function t2.value64.DeckPower(p33, p34)
+	if not t2.value38(p33) then
+		return
+	end
+
+	if type(p34) ~= "table" then
+		return
+	end
+
+	local v200 = t2.value42(p34.Slot)
+
+	t2.value65[v200] = p34.Enabled ~= false
+
+	if not t2.value65[v200] then
+		local v201 = t2.value49(v200)
+
+		v201:Stop()
+		v201.TimePosition = 0
+	end
+end
+function t2.value64.DeckPowerAll(p35, p36)
+	if not t2.value38(p35) then
+		return
+	end
+
+	if type(p36) ~= "table" then
+		return
+	end
+
+	local v204 = p36.Enabled == true
+
+	if v204 then
+		if t2.value23 and t2.value23 ~= p35.UserId then
+			local value43 = t2.value43
+			local v206 = "Deck is already claimed by " .. tostring(t2.value24 or "another admin")
+			local color3 = Color3.fromRGB(255, 120, 120)
+
+			value43(p35, {
+				Msg = v206,
+				Color = color3
+			})
+
+			local value8 = t2.value8
+			local value24 = t2.value24
+
+			value8:FireClient(p35, "DeckPowerState", {
+				Enabled = false,
+				Owner = value24
+			})
+
+			return
+		end
+
+		t2.value23 = p35.UserId
+		t2.value24 = p35.Name
+	else
+		if t2.value23 and t2.value23 ~= p35.UserId then
+			local value43 = t2.value43
+			local v211 = "Only " .. tostring(t2.value24 or "the deck owner") .. " can turn off the deck"
+			local fromRGB = Color3.fromRGB
+
+			value43(p35, {
+				Msg = v211,
+				Color = fromRGB(255, 120, 120)
+			})
+
+			local value8 = t2.value8
+			local value24 = t2.value24
+
+			value8:FireClient(p35, "DeckPowerState", {
+				Enabled = true,
+				Owner = value24
+			})
+
+			return
+		end
+
+		t2.value23 = nil
+		t2.value24 = nil
+	end
+
+	t2.value22 = v204
+	t2.value65.A = v204
+	t2.value65.B = v204
+
+	local value8 = t2.value8
+	local value24 = t2.value24
+
+	value8:FireAllClients("DeckPowerState", {
+		Enabled = v204,
+		Owner = value24
+	})
+
+	if v204 then
+		t2.value36:Stop()
+		t2.value36.SoundId = ""
+		t2.value17 = nil
+		t2.value20 = false
+		t2.value8:FireAllClients("NewSong", nil)
+
+		return
+	end
+
+	t2.value25 = 0
+
+	for _, v in ipairs({
+		"A",
+		"B"
+		}) do
+		local v219 = t2.value49(v)
+
+		t2.value48(v219)
+	end
+
+	local Pads = t2.value37:FindFirstChild("Pads")
+
+	if Pads then
+		Pads:ClearAllChildren()
+	end
+
+	t2.value20 = false
+	task.defer(t2.value60)
+end
+function t2.value64.DeckPlay(p37, p38)
+	if not t2.value38(p37) then
+		return
+	end
+
+	if type(p38) ~= "table" then
+		return
+	end
+
+	local v223 = t2.value42(p38.Slot)
+
+	if t2.value65[v223] == false then
+		return
+	end
+
+	if t2.value23 ~= p37.UserId then
+		local value43 = t2.value43
+		local v225 = "Deck is claimed by " .. tostring(t2.value24 or "another admin")
+		local color3 = Color3.fromRGB(255, 120, 120)
+
+		value43(p37, {
+			Msg = v225,
+			Color = color3
+		})
+
+		return
+	end
+
+	local v227 = t2.value44(p38.Key)
+
+	if not v227 then
+		return
+	end
+
+	local v228, v229 = t2.value49(p38.Slot)
+
+	v228:Stop()
+	v228.SoundId = "rbxassetid://" .. tostring(v227.ID)
+
+	local value47 = t2.value47
+	local v231 = tonumber(p38.Volume) or (tonumber(v227.Volume) or 1)
+	local p38Speed = p38.Speed
+	local p38Loop = p38.Loop
+	local LowGain = p38.LowGain
+	local MidGain = p38.MidGain
+	local HighGain = p38.HighGain
+
+	value47(v228, {
+		Volume = v231,
+		Speed = p38Speed,
+		Loop = p38Loop,
+		LowGain = LowGain,
+		MidGain = MidGain,
+		HighGain = HighGain
+	}, v229)
+	v228.TimePosition = 0
+	pcall(t2.value3.PreloadAsync, t2.value3, { v228 })
+	v228:Play()
+
+	local value43 = t2.value43
+	local _tostring = tostring
+	local Name = v227.Name
+
+	if not Name then
+		Name = v227.Key or v227.ID
+	end
+
+	local v240 = "Deck " .. v229 .. " playing: " .. _tostring(Name)
+	local color3 = Color3.fromRGB(180, 220, 255)
+
+	value43(p37, {
+		Msg = v240,
+		Color = color3
+	})
+end
+function t2.value64.DeckPadPlay(p39, p40)
+	if not t2.value38(p39) then
+		return
+	end
+
+	if type(p40) ~= "table" then
+		return
+	end
+
+	if not t2.value65.A and not t2.value65.B then
+		return
+	end
+
+	if t2.value23 ~= p39.UserId then
+		local value43 = t2.value43
+		local v245 = "Deck is claimed by " .. tostring(t2.value24 or "another admin")
+		local color3 = Color3.fromRGB(255, 120, 120)
+
+		value43(p39, {
+			Msg = v245,
+			Color = color3
+		})
+
+		return
+	end
+
+	local v247 = t2.value44(p40.Key)
+
+	if not v247 then
+		return
+	end
+
+	local Pads = t2.value37:FindFirstChild("Pads")
+
+	if not Pads then
+		Pads = Instance.new("Folder")
+		Pads.Name = "Pads"
+		Pads.Parent = t2.value37
+	end
+
+	local Sound = Instance.new("Sound")
+
+	Sound.Name = "Pad_" .. tostring(v247.Key or v247.ID)
+	Sound.SoundId = "rbxassetid://" .. tostring(v247.ID)
+	Sound.Volume = math.clamp(tonumber(p40.Volume) or (tonumber(v247.Volume) or 1), 0, 5)
+	Sound.PlaybackSpeed = math.clamp(tonumber(p40.Speed) or 1, 0.25, 3)
+	Sound.Looped = p40.Loop == true
+	Sound.Parent = Pads
+	pcall(t2.value3.PreloadAsync, t2.value3, { Sound })
+	Sound:Play()
+
+	if not Sound.Looped then
+		task.delay(20, function()
+			if Sound and Sound.Parent then
+				Sound:Destroy()
+			end
+		end)
+	end
+end
+function t2.value64.DeckPadStop(p41, _)
+	if not t2.value38(p41) then
+		return
+	end
+
+	if t2.value22 and t2.value23 ~= p41.UserId then
+		return
+	end
+
+	local Pads = t2.value37:FindFirstChild("Pads")
+
+	if Pads then
+		Pads:ClearAllChildren()
+	end
+end
+function t2.value64.DeckPlayCustom(p43, p44)
+	if not t2.value38(p43) then
+		return
+	end
+
+	if type(p44) ~= "table" then
+		return
+	end
+
+	local num = tonumber(p44.ID)
+
+	if not num or num <= 0 then
+		return
+	end
+
+	local v256 = t2.value42(p44.Slot)
+
+	if t2.value65[v256] == false then
+		return
+	end
+
+	if t2.value23 ~= p43.UserId then
+		local value43 = t2.value43
+		local v258 = "Deck is claimed by " .. tostring(t2.value24 or "another admin")
+		local color3 = Color3.fromRGB(255, 120, 120)
+
+		value43(p43, {
+			Msg = v258,
+			Color = color3
+		})
+
+		return
+	end
+
+	local v260, v261 = t2.value49(p44.Slot)
+
+	v260:Stop()
+	v260.SoundId = "rbxassetid://" .. tostring(num)
+	t2.value47(v260, p44, v261)
+	v260.TimePosition = 0
+	pcall(t2.value3.PreloadAsync, t2.value3, { v260 })
+	v260:Play()
+
+	local value43 = t2.value43
+	local v263 = "Deck " .. v261 .. " playing custom ID " .. tostring(num)
+	local color3 = Color3.fromRGB(180, 220, 255)
+
+	value43(p43, {
+		Msg = v263,
+		Color = color3
+	})
+end
+function t2.value64.DeckStop(p45, p46)
+	if not t2.value38(p45) then
+		return
+	end
+
+	if t2.value22 and t2.value23 ~= p45.UserId then
+		return
+	end
+
+	local s1 = "A"
+
+	if type(p46) == "table" then
+		s1 = p46.Slot
+	end
+
+	local v268 = t2.value49(s1)
+
+	v268:Stop()
+	v268.TimePosition = 0
+end
+function t2.value64.DeckPause(p47, p48)
+	if not t2.value38(p47) then
+		return
+	end
+
+	if t2.value22 and t2.value23 ~= p47.UserId then
+		return
+	end
+
+	local s2 = "A"
+
+	if type(p48) == "table" then
+		s2 = p48.Slot
+	end
+
+	local v272 = t2.value49(s2)
+
+	if v272.IsPlaying then
+		v272:Pause()
+
+		return
+	end
+
+	if v272.SoundId ~= "" then
+		v272:Resume()
+	end
+end
+function t2.value64.DeckLoop(p49, p50)
+	if not t2.value38(p49) then
+		return
+	end
+
+	if type(p50) ~= "table" then
+		return
+	end
+
+	local v275 = p50.Loop == true
+
+	if p50.Slot then
+		local Slot = p50.Slot
+
+		t2.value49(Slot).Looped = v275
+
+		return
+	end
+
+	local v277 = t2.value49("A")
+	local v278 = t2.value49("B")
+
+	v277.Looped = v275
+	v278.Looped = v275
+end
+function t2.value64.DeckVolume(p51, p52)
+	if not t2.value38(p51) then
+		return
+	end
+
+	if type(p52) ~= "table" then
+		return
+	end
+
+	local v281 = math.clamp(tonumber(p52.Volume) or 1, 0, 5)
+
+	if p52.Slot then
+		local Slot = p52.Slot
+
+		t2.value49(Slot).Volume = v281
+
+		return
+	end
+
+	local v283 = t2.value49("A")
+	local v284 = t2.value49("B")
+
+	v283.Volume = v281
+	v284.Volume = v281
+end
+function t2.value64.DeckControl(p53, p54)
+	if not t2.value38(p53) then
+		return
+	end
+
+	if t2.value22 and t2.value23 ~= p53.UserId then
+		return
+	end
+
+	if type(p54) ~= "table" then
+		return
+	end
+
+	local Slot = p54.Slot
+	local v288, v289 = t2.value49(Slot)
+
+	t2.value47(v288, p54, v289)
+end
+function t2.value64.DeckSeek(p55, p56)
+	if not t2.value38(p55) then
+		return
+	end
+
+	if t2.value22 and t2.value23 ~= p55.UserId then
+		return
+	end
+
+	if type(p56) ~= "table" then
+		return
+	end
+
+	local v292 = t2.value49(p56.Slot)
+	local num = tonumber(p56.TimePosition)
+
+	if num and (v292.TimeLength or 0) > 0 then
+		v292.TimePosition = math.clamp(num, 0, v292.TimeLength)
+	end
+end
+function t2.value64.DeckCrossMix(p57, p58)
+	if not t2.value38(p57) then
+		return
+	end
+
+	if t2.value22 and t2.value23 ~= p57.UserId then
+		return
+	end
+
+	if type(p58) ~= "table" then
+		return
+	end
+
+	t2.value25 = math.clamp(tonumber(p58.Alpha) or 0.5, 0, 1)
+
+	local v296 = t2.value49("A")
+	local v297 = t2.value49("B")
+	local v298 = math.clamp(tonumber(p58.VolumeA) or (v296:GetAttribute("DeckBaseVolume") or 1), 0, 5)
+	local v299 = math.clamp(tonumber(p58.VolumeB) or (v297:GetAttribute("DeckBaseVolume") or 1), 0, 5)
+
+	v296:SetAttribute("DeckBaseVolume", v298)
+	v297:SetAttribute("DeckBaseVolume", v299)
+	t2.value46(v296, "A")
+	t2.value46(v297, "B")
+end
+function t2.value64.DeckCrossfade(p59, p60)
+	if not t2.value38(p59) then
+		return
+	end
+
+	if t2.value22 and t2.value23 ~= p59.UserId then
+		return
+	end
+
+	if type(p60) ~= "table" then
+		return
+	end
+
+	local v302 = t2.value49(p60.From)
+	local v303 = t2.value49(p60.To)
+	local v304 = math.clamp(tonumber(p60.Duration) or 3, 0.1, 20)
+	local v305 = math.max(v303.Volume, 1)
+
+	if not v303.IsPlaying and v303.SoundId ~= "" then
+		v303:Play()
+	end
+
+	t2.value4:Create(v302, TweenInfo.new(v304, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+		Volume = 0
+	}):Play()
+	t2.value4:Create(v303, TweenInfo.new(v304, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+		Volume = v305
+	}):Play()
+end
+function t2.value64.ToggleAutoplay(p61, _)
+	if not t2.value38(p61) then
+		return
+	end
+
+	t2.value26 = not t2.value26
+	t2.value8:FireAllClients("AutoPlay", t2.value26)
+
+	local value61 = t2.value61
+	local v309 = t2.value26 and t2.value10.AutoplayEnabled
+
+	if not v309 then
+		v309 = t2.value10.AutoplayDisabled
+	end
+
+	value61(v309)
+
+	if not t2.value26 then
+		t2.value36:Stop()
+		t2.value36.SoundId = ""
+		t2.value8:FireAllClients("NewSong", nil)
+	end
+end
+t2.value66 = {}
+function t2.value64.PreloadCheckDone(p63, p64)
+	local num = tonumber(p64)
+
+	if not num then
+		return
+	end
+
+	for _, v in pairs(t2.value66) do
+		if num == v.id and not v.finished then
+			v.responded[p63.UserId] = true
+		end
+	end
+end
+function t2.value64.RequestPreloadCheck(p65, p66)
+	if not p65 or not p65.Parent then
+		return
+	end
+	local num = tonumber(p66)
+	if not num or num <= 0 then
+		t2.value43(p65, t2.value10.QueueInvalidID)
+
+		return
+	end
+	for _, v in ipairs(t2.value16) do
+		if num == tonumber(v.ID) then
+			t2.value43(p65, t2.value10.QueueDuplicate)
+
+			return
+		end
+	end
+	local t6
+	local UserId = p65.UserId
+	local v322 = t2.value18[UserId]
+	if v322 then
+		for _, v in ipairs(v322) do
+			if num == tonumber(v.ID) then
+				local vName = v.Name
+
+				if not vName then
+					vName = "Song " .. num
+				end
+
+				local v326 = v.Creator or "Unknown"
+
+				t6 = {
+					ID = num,
+					Name = vName,
+					Creator = v326
+				}
+
+				break
+			end
+		end
+	end
+	local v327 = t6 or t2.value50(num)
+	if v327 then
+		v327 = v327.Name
+	end
+	local v328 = v327 or "Memuat judul lagu..."
+	local v329 = #t2.value1:GetPlayers()
+	local UserId2 = p65.UserId
+	t2.value66[UserId2] = {
+		id = num,
+		responded = {},
+		expected = v329,
+		finished = false
+	}
+	t2.value8:FireAllClients("PreloadCheckStart", {
+		ID = num,
+		Name = v328,
+		Requester = p65.Name
+	})
+	task.spawn(function()
+		local v554 = t2.value9.Settings and t2.value9.Settings.PRELOAD_CHECK or {}
+		local v555 = v554.Timeout or 8
+		local v556 = v554.ThresholdPercent or 0.7
+		local v557 = v554.PollInterval or 0.25
+		local v558 = os.clock() + v555
+
+		while v558 > os.clock() do
+			local UserId3 = p65.UserId
+			local v560 = t2.value66[UserId3]
+
+			if not v560 or v560.finished then
+				return
+			end
+
+			local n4 = 0
+
+			for _ in pairs(v560.responded) do
+				n4 += 1
+			end
+
+			if n4 >= math.max(1, (math.ceil(v560.expected * v556))) then
+				break
+			end
+
+			task.wait(v557)
+		end
+
+		local UserId4 = p65.UserId
+		local v564 = t2.value66[UserId4]
+
+		if not v564 or v564.finished then
+			return
+		end
+
+		v564.finished = true
+
+		local n5 = 0
+
+		for _ in pairs(v564.responded) do
+			n5 += 1
+		end
+
+		local v567 = math.max(1, (math.ceil(v564.expected * v556)))
+		local v568 = p65
+		local v569 = v567 <= n5
+
+		if v568 and p65.Parent then
+			if v569 then
+				t2.value8:FireClient(p65, "PreloadCheckReady", {
+					ID = num,
+					Name = v328
+				})
+			else
+				local value8 = t2.value8
+				local v571 = p65
+				local v572 = num
+				local expected = v564.expected
+
+				value8:FireClient(v571, "PreloadCheckFailed", {
+					ID = v572,
+					Responded = n5,
+					Expected = expected
+				})
+			end
+		end
+
+		t2.value8:FireAllClients("PreloadCheckEnd", {
+			ID = num
+		})
+		t2.value66[p65.UserId] = nil
+	end)
+end
+function t2.value64.ResyncSong(p67, _)
+	if not p67 or not p67.Parent then
+		return
+	end
+
+	if t2.value17 then
+		if t2.value36.IsLoaded and (t2.value36.TimeLength or 0) > 0 then
+			local TimeLength = t2.value36.TimeLength
+			local PlaybackSpeed = t2.value36.PlaybackSpeed
+
+			if not PlaybackSpeed or PlaybackSpeed <= 0 then
+				PlaybackSpeed = 1
+			end
+
+			local value8 = t2.value8
+			local ID = t2.value17.ID
+			local value17Name = t2.value17.Name
+			local v338 = TimeLength / PlaybackSpeed
+			local v339 = t2.value17.Creator or "Unknown"
+			local Requester = t2.value17.Requester
+			local v341 = t2.value36.TimePosition or 0
+
+			value8:FireClient(p67, "NewSong", {
+				ID = ID,
+				Name = value17Name,
+				Duration = TimeLength,
+				EffectiveDuration = v338,
+				Creator = v339,
+				PlaybackSpeed = PlaybackSpeed,
+				Requester = Requester,
+				TimePosition = v341,
+				Cover = t2.value17.Cover
+			})
+
+			return
+		end
+
+		pcall(t2.value3.PreloadAsync, t2.value3, { t2.value36 })
+
+		local v342 = os.clock() + (t2.value9.Settings.SongLoadTimeout or 5)
+
+		repeat
+			task.wait(0.2)
+
+			local v343 = t2.value36.IsLoaded and (t2.value36.TimeLength or 0) > 0
+
+			if not v343 then
+				v343 = v342 <= os.clock()
+			end
+		until v343
+
+		local v344 = (t2.value36.TimeLength or 0) > 0 and t2.value36.TimeLength
+
+		if not v344 then
+			v344 = t2.value17.Duration or 0
+		end
+
+		local PlaybackSpeed = t2.value36.PlaybackSpeed
+
+		if not PlaybackSpeed or PlaybackSpeed <= 0 then
+			PlaybackSpeed = 1
+		end
+
+		local value8 = t2.value8
+		local ID = t2.value17.ID
+		local value17Name = t2.value17.Name
+		local v349 = v344 / PlaybackSpeed
+		local v350 = t2.value17.Creator or "Unknown"
+		local FireClient = value8.FireClient
+		local Requester = t2.value17.Requester
+		local v353 = t2.value36.TimePosition or 0
+
+		FireClient(value8, p67, "NewSong", {
+			ID = ID,
+			Name = value17Name,
+			Duration = v344,
+			EffectiveDuration = v349,
+			Creator = v350,
+			PlaybackSpeed = PlaybackSpeed,
+			Requester = Requester,
+			TimePosition = v353,
+			Cover = t2.value17.Cover
+		})
+
+		return
+	end
+
+	if not t2.value36.IsPlaying and not t2.value20 then
+		t2.value60()
+	end
+end
+function t2.value64.RequestEQSync(p69, _)
+	if t2.value27 and next(t2.value27) then
+		task.delay(0.5, function()
+			if p69 and p69.Parent then
+				local v574 = p69
+
+				t2.value8:FireClient(v574, "ApplyEQ", t2.value27)
+			end
+		end)
+	end
+end
+function t2.value64.SyncEQ(p71, p72)
+	if not t2.value38(p71) then
+		return
+	end
+
+	if typeof(p72) ~= "table" then
+		return
+	end
+
+	local t7 = {}
+
+	for k, v in pairs(p72) do
+		local v361 = k
+
+		if typeof(v) == "table" then
+			t7[v361] = {}
+
+			for k2, v6 in pairs(v) do
+				if typeof(v6) == "number" then
+					t7[v361][k2] = math.clamp(v6, -1000, 1000)
+				end
+			end
+
+			if v361 == "SpeedControl" then
+				local num = tonumber(v.Speed)
+
+				if num then
+					t2.value36.PlaybackSpeed = math.clamp(num, 0.5, 2)
+				end
+			end
+		end
+	end
+
+	t2.value27 = t7
+	t2.value56()
+	t2.value8:FireAllClients("ApplyEQ", t2.value27)
+
+	local EQSynced = t2.value10.EQSynced
+	local p71Name = p71.Name
+
+	t2.value61(EQSynced, p71Name)
+end
+function t2.value64.SetSpeed(p73, p74)
+	if not t2.value38(p73) then
+		return
+	end
+
+	local num = tonumber(p74)
+
+	if not num then
+		return
+	end
+
+	local v370 = math.clamp(num, 0.5, 2)
+	local value27 = t2.value27
+
+	if not value27 then
+		value27 = {}
+	end
+
+	t2.value27 = value27
+	t2.value27.SpeedControl = t2.value27.SpeedControl or {}
+	t2.value27.SpeedControl.Speed = v370
+	t2.value36.PlaybackSpeed = v370
+	t2.value56()
+	t2.value8:FireAllClients("ApplyEQ", t2.value27)
+
+	if t2.value17 then
+		local TimeLength = t2.value36.TimeLength
+		local value8 = t2.value8
+		local ID = t2.value17.ID
+		local value17Name = t2.value17.Name
+		local FireAllClients = value8.FireAllClients
+		local Creator = t2.value17.Creator
+
+		FireAllClients(value8, "NewSong", {
+			ID = ID,
+			Name = value17Name,
+			Duration = TimeLength,
+			EffectiveDuration = TimeLength / v370,
+			Creator = Creator or "Unknown",
+			PlaybackSpeed = v370,
+			Cover = t2.value17.Cover
+		})
+	end
+
+	t2.value61(t2.value10.SpeedChanged, v370, p73.Name)
+end
+function t2.value64.AddQueue(p75, p76)
+	local value21 = t2.value21
+
+	if value21 then
+		value21 = not t2.value38(p75)
+	end
+
+	if value21 then
+		t2.value43(p75, t2.value10.QueueDJLocked)
+
+		return
+	end
+
+	local num = tonumber(p76)
+
+	if not num or num <= 0 then
+		t2.value43(p75, t2.value10.QueueInvalidID)
+
+		return
+	end
+
+	for _, v in ipairs(t2.value16) do
+		if num == tonumber(v.ID) then
+			t2.value43(p75, t2.value10.QueueDuplicate)
+
+			return
+		end
+	end
+
+	if not t2.value38(p75) then
+		local n6 = 0
+
+		for _, v in ipairs(t2.value16) do
+			if v.Requester == p75.Name then
+				n6 += 1
+			end
+		end
+
+		if n6 >= t2.value9.Settings.MaxQueuePerPlayer then
+			t2.value43(p75, t2.value10.QueuePlayerFull, t2.value9.Settings.MaxQueuePerPlayer)
+
+			return
+		end
+
+		if #t2.value16 >= (t2.value9.Settings.MaxQueueSize or 20) then
+			t2.value43(p75, t2.value10.QueueGlobalFull, t2.value9.Settings.MaxQueueSize or 20)
+
+			return
+		end
+	end
+
+	local v387 = t2.value41(num)
+
+	if v387 then
+		local insert = table.insert
+		local Name = v387.Name
+		local Creator = v387.Creator
+		local p75Name = p75.Name
+		local v392 = v387.PlaybackSpeed or 1
+
+		insert(t2.value16, {
+			ID = num,
+			Name = Name,
+			Creator = Creator,
+			Requester = p75Name,
+			PlaybackSpeed = v392,
+			Cover = v387.Cover
+		})
+		t2.value8:FireAllClients("UpdateQueue", t2.value16)
+		t2.value62(p75, num, v387.Name, v387.Creator)
+
+		if not t2.value36.IsPlaying then
+			t2.value60()
+		end
+
+		return
+	end
+
+	local v393 = t2.value18[p75.UserId]
+
+	if v393 then
+		for _, v in ipairs(v393) do
+			if num == tonumber(v.ID) then
+				local insert = table.insert
+				local value16 = t2.value16
+				local v398 = v.Name or "Song " .. num
+				local v399 = v.Creator or "Unknown"
+				local p75Name = p75.Name
+
+				insert(value16, {
+					ID = num,
+					Name = v398,
+					Creator = v399,
+					Requester = p75Name,
+					PlaybackSpeed = 1,
+					Cover = v.Cover
+				})
+				t2.value8:FireAllClients("UpdateQueue", t2.value16)
+
+				local value43 = t2.value43
+				local QueueAdded = t2.value10.QueueAdded
+				local vName = v.Name
+
+				if not vName then
+					vName = "Song " .. num
+				end
+
+				value43(p75, QueueAdded, vName)
+
+				if not t2.value36.IsPlaying then
+					t2.value60()
+				end
+
+				return
+			end
+		end
+	end
+
+	local v404 = t2.value50(num)
+	local v405 = v404
+
+	if v404 then
+		v405 = v404.Name and v404.Name ~= ""
+	end
+
+	if v405 then
+		local insert = table.insert
+		local Name = v404.Name
+		local v408 = v404.Creator or "Unknown"
+		local p75Name = p75.Name
+
+		insert(t2.value16, {
+			ID = num,
+			Name = Name,
+			Creator = v408,
+			Requester = p75Name,
+			PlaybackSpeed = 1,
+			Cover = v404.Cover
+		})
+		t2.value8:FireAllClients("UpdateQueue", t2.value16)
+		t2.value43(p75, t2.value10.QueueAdded, v404.Name)
+		t2.value62(p75, num, v404.Name, v404.Creator or "Unknown")
+
+		if not t2.value36.IsPlaying then
+			t2.value60()
+		end
+
+		return
+	end
+
+	local insert = table.insert
+	local p75Name = p75.Name
+
+	insert(t2.value16, {
+		ID = num,
+		Name = "Loading...",
+		Creator = "Loading...",
+		Requester = p75Name,
+		PlaybackSpeed = 1
+	})
+	t2.value8:FireAllClients("UpdateQueue", t2.value16)
+
+	local QueueFetching = t2.value10.QueueFetching
+
+	t2.value43(p75, QueueFetching)
+	task.spawn(function()
+		local result8
+		local v576 = false
+		local n7 = 0
+		while n7 < 20 do
+			n7 += 1
+			v576, result8 = pcall(t2.value2.GetProductInfoAsync, t2.value2, num)
+
+			local v578 = v576
+
+			if v576 then
+				v578 = result8
+
+				if result8 then
+					v578 = result8.Name
+
+					if v578 then
+						v578 = result8.Name ~= ""
+					end
+				end
+			end
+
+			if v578 then
+				break
+			end
+
+			local v579 = false
+
+			for _, v in ipairs(t2.value16) do
+				if tonumber(v.ID) == num and v.Requester == p75.Name then
+					v579 = true
+
+					break
+				end
+			end
+
+			if not v579 then
+				return
+			end
+
+			if n7 < 20 then
+				task.wait(math.min(2 * n7, 8))
+			end
+		end
+		if v576 then
+			v576 = result8 and result8.Name and result8.Name ~= ""
+		end
+		local v580local = t2.value41(num)
+		for i, v in ipairs(t2.value16) do
+			local v584 = i
+
+			if tonumber(v.ID) == num and v.Requester == p75.Name then
+				if v576 then
+					local result8Name = result8.Name
+					local Creator = result8.Creator
+
+					if Creator then
+						Creator = result8.Creator.Name
+					end
+
+					local v587 = Creator or "Unknown"
+					local v587Cover = v580local and v580local.Cover
+
+					t2.value16[v584].Name = result8Name
+					t2.value16[v584].Creator = v587
+					t2.value16[v584].Cover = v587Cover
+					t2.value32[num] = {
+						ID = num,
+						Name = result8Name,
+						Creator = v587,
+						Cover = v587Cover,
+						IsValid = true
+					}
+					t2.value8:FireAllClients("UpdateQueue", t2.value16)
+
+					local value10 = t2.value10
+
+					t2.value43(p75, value10.QueueAdded, result8Name)
+					t2.value62(p75, num, result8Name, v587)
+
+					if t2.value36.IsPlaying then
+						return
+					end
+
+					t2.value60()
+
+					return
+				end
+
+				table.remove(t2.value16, v584)
+				t2.value8:FireAllClients("UpdateQueue", t2.value16)
+				t2.value43(p75, t2.value10.QueueInvalidAudio)
+
+				return
+			end
+		end
+	end)
+end
+function t2.value64.PlayNow(p77, p78)
+	if not t2.value38(p77) then
+		local value43 = t2.value43
+		local color3 = Color3.fromRGB(255, 120, 120)
+
+		value43(p77, {
+			Msg = "Only admins can play songs directly.",
+			Color = color3
+		})
+
+		return
+	end
+
+	local num = tonumber(p78)
+
+	if not num then
+		return
+	end
+
+	for i, v in ipairs(t2.value16) do
+		if num == tonumber(v.ID) then
+			local v420 = table.remove(t2.value16, i)
+
+			t2.value8:FireAllClients("UpdateQueue", t2.value16)
+			t2.value36:Stop()
+
+			local _task = task
+			local format = ("%s (Admin) played %s now!").format
+
+			_task.spawn(function()
+				t2.value63(v420)
+			end)
+			t2.value61({
+				Msg = format("%s (Admin) played %s now!", p77.Name, v420.Name or "a song"),
+				Color = Color3.fromRGB(255, 200, 0)
+			})
+
+			return
+		end
+	end
+end
+function t2.value64.RemoveQueue(p79, p80)
+	local value21 = t2.value21
+
+	if value21 then
+		value21 = not t2.value38(p79)
+	end
+
+	if value21 then
+		t2.value43(p79, t2.value10.QueueRemoveDJLock)
+
+		return
+	end
+
+	local num = tonumber(p80)
+	local v427 = t2.value38(p79)
+	local _ipairs = ipairs
+
+	for v429, v430 in _ipairs(t2.value16) do
+		local v431 = num == tonumber(v430.ID)
+
+		if v431 then
+			v431 = v430.Requester == p79.Name or v427
+		end
+
+		if v431 then
+			local v432 = table.remove(t2.value16, v429)
+
+			t2.value8:FireAllClients("UpdateQueue", t2.value16)
+
+			if v427 and v432.Requester ~= p79.Name then
+				t2.value61(t2.value10.QueueAdminRemoved, p79.Name, v432.Requester)
+
+				return
+			end
+
+			t2.value43(p79, t2.value10.QueueRemoved)
+
+			return
+		end
+	end
+end
+function t2.value64.ToggleFavorite(p81, p82)
+	local v435 = t2.value18[p81.UserId]
+	if not v435 then
+		return
+	end
+	local num = tonumber(p82)
+	local Name
+	local v438 = false
+	for i = #v435, 1, -1 do
+		local v440 = i
+
+		if num == tonumber(v435[v440].ID) then
+			Name = v435[v440].Name
+			table.remove(v435, v440)
+			v438 = true
+		end
+	end
+	if not v438 then
+		local v441 = t2.value50(num)
+
+		if v441 then
+			local insert = table.insert
+			local ID = v441.ID
+			local Name2 = v441.Name
+
+			insert(v435, {
+				ID = ID,
+				Name = Name2,
+				Creator = v441.Creator,
+				Cover = v441.Cover
+			})
+			Name = v441.Name
+		else
+			Name = "Song " .. num
+			table.insert(v435, {
+				ID = num,
+				Name = Name,
+				Creator = "Unknown"
+			})
+		end
+	end
+	t2.value8:FireClient(p81, "UpdateFavorites", v435)
+	v39(p81.UserId)
+	local v445 = v438 and t2.value10.FavRemoved or t2.value10.FavAdded
+	if v445 then
+		local Msg = v445.Msg
+
+		if Name then
+			Msg ..= " (" .. Name .. ")"
+		end
+
+		t2.value8:FireClient(p81, "Notify", {
+			Msg = Msg,
+			Color = v445.Color
+		})
+	end
+end
+function t2.value64.ToggleDJMode(p83, _)
+	if not t2.value38(p83) then
+		return
+	end
+
+	t2.value21 = not t2.value21
+	t2.value8:FireAllClients("DJMode", t2.value21)
+
+	local value61 = t2.value61
+	local v450 = t2.value21 and t2.value10.DJModeEnabled
+
+	if not v450 then
+		v450 = t2.value10.DJModeDisabled
+	end
+
+	value61(v450)
+end
+function t2.value64.AddSongToLibrary(p85, p86)
+	if not t2.value38(p85) then
+		return
+	end
+
+	local v453 = type(p86) ~= "table"
+
+	if not v453 then
+		v453 = not p86.ID or not p86.Category
+	end
+
+	if v453 then
+		return
+	end
+
+	local num = tonumber(p86.ID)
+
+	if not num then
+		return
+	end
+
+	local v455 = p86.Name or "Unknown Song"
+	local v456 = tonumber(p86.Speed) or 1
+	local Category = p86.Category
+	local v456Cover = p86.Cover
+
+	for _, v in ipairs(t2.value31) do
+		if num == tonumber(v.ID) then
+			t2.value43(p85, {
+				Msg = "Song already in library",
+				Color = Color3.fromRGB(255, 180, 80)
+			})
+
+			return
+		end
+	end
+
+	table.insert(t2.value31, {
+		ID = num,
+		Name = v455,
+		Speed = v456,
+		Category = Category,
+		Cover = v456Cover
+	})
+	table.insert(t2.value51, {
+		ID = num,
+		Name = v455,
+		PlaybackSpeed = v456,
+		Cover = v456Cover
+	})
+	t2.value40[num] = {
+		ID = num,
+		Name = v455,
+		PlaybackSpeed = v456,
+		Cover = v456Cover
+	}
+
+	local t8 = {
+		ID = num,
+		Name = v455,
+		Speed = v456,
+		Category = Category,
+		Cover = v456Cover
+	}
+
+	t2.value8:FireAllClients("SyncNewSong", t8)
+	t2.value58()
+end
+function t2.value64.RemoveSongFromLibrary(p87, p88)
+	if not t2.value38(p87) then
+		return
+	end
+	local num = tonumber(p88)
+	if not num then
+		return
+	end
+	local v464
+	for i = #t2.value31, 1, -1 do
+		local v466 = i
+
+		if num == tonumber(t2.value31[v466].ID) then
+			v464 = v464 or t2.value31[v466].Category
+			table.remove(t2.value31, v466)
+		end
+	end
+	for i = #t2.value51, 1, -1 do
+		local v468 = i
+
+		if num == tonumber(t2.value51[v468].ID) then
+			table.remove(t2.value51, v468)
+		end
+	end
+	if v464 then
+		t2.value58()
+		t2.value8:FireAllClients("SyncRemoveSong", {
+			ID = num,
+			Category = v464
+		})
+
+		return
+	end
+	local value43 = t2.value43
+	local color3 = Color3.fromRGB(255, 100, 100)
+	value43(p87, {
+		Msg = "Song not found in dynamic library",
+		Color = color3
+	})
+end
+function t2.value64.StartSkipVote(p89, _)
+	if not t2.value36.IsPlaying or t2.value20 then
+		return
+	end
+
+	if t2.value21 and not t2.value38(p89) then
+		t2.value43(p89, t2.value10.SkipDJLocked)
+
+		return
+	end
+
+	if t2.value38(p89) then
+		local SkipAdminForced = t2.value10.SkipAdminForced
+		local p89Name = p89.Name
+
+		t2.value61(SkipAdminForced, p89Name)
+		t2.value36:Stop()
+		t2.value60()
+
+		return
+	end
+
+	local v475 = #t2.value1:GetPlayers()
+
+	if v475 <= 1 then
+		t2.value36:Stop()
+		t2.value60()
+		t2.value43(p89, t2.value10.SkipSoloMode)
+
+		return
+	end
+
+	local timestamp = os.time()
+	local v477 = t2.value28[p89.UserId]
+
+	if v477 and timestamp < v477 then
+		t2.value43(p89, t2.value10.SkipCooldown, v477 - timestamp)
+
+		return
+	end
+
+	if t2.value35.Active then
+		t2.value43(p89, t2.value10.SkipVoteOngoing)
+
+		return
+	end
+
+	local SkipVote = t2.value9.Settings.SkipVote
+	local v479 = math.ceil(v475 * (SkipVote.RequiredPercent or 0.2))
+	local v480 = SkipVote.Duration or 10
+
+	t2.value35.Active = true
+	t2.value35.Starter = p89
+
+	local UserId = p89.UserId
+
+	t2.value35.Voters = {
+		[UserId] = true
+	}
+	t2.value35.YesCount = 1
+
+	local UserId5 = p89.UserId
+	local Cooldown = SkipVote.Cooldown
+
+	t2.value28[UserId5] = timestamp + (Cooldown or 60)
+
+	local value8 = t2.value8
+	local p89Name = p89.Name
+	local UserId6 = p89.UserId
+
+	value8:FireAllClients("ShowSkipVote", {
+		StarterName = p89Name,
+		StarterUserId = UserId6,
+		Current = t2.value35.YesCount,
+		Required = v479,
+		Duration = v480
+	})
+	task.delay(v480, function()
+		if t2.value35.Active then
+			t2.value35.Active = false
+			t2.value8:FireAllClients("HideSkipVote")
+		end
+	end)
+end
+function t2.value64.SubmitVote(p91, p92)
+	if not t2.value35.Active or t2.value35.Voters[p91.UserId] then
+		return
+	end
+
+	if p92 ~= "Yes" then
+		return
+	end
+
+	t2.value35.Voters[p91.UserId] = true
+
+	local value35 = t2.value35
+
+	value35.YesCount = value35.YesCount + 1
+
+	local players = t2.value1:GetPlayers()
+	local _math = math
+	local v492 = #players
+	local v493 = _math.ceil(v492 * (t2.value9.Settings.SkipVote.RequiredPercent or 0.2))
+
+	t2.value8:FireAllClients("UpdateSkipVote", {
+		Current = t2.value35.YesCount,
+		Required = v493
+	})
+
+	if v493 <= t2.value35.YesCount then
+		t2.value35.Active = false
+		t2.value8:FireAllClients("HideSkipVote")
+
+		local value10 = t2.value10
+
+		t2.value61(value10.SkipVotePassed)
+		t2.value36:Stop()
+		t2.value60()
+	end
+end
+function t2.value64.SetVolume(p93, p94)
+	local UserId = p93.UserId
+
+	t2.value19[UserId] = p94
+end
+v24.OnServerEvent:Connect(function(player, p95, p96)
+	local v501 = t2.value64[p95]
+
+	if v501 then
+		v501(player, p96)
+
+		return
+	end
+
+	warn("[Music] Unknown actionType: " .. tostring(p95))
+end)
+t2.value1.PlayerAdded:Connect(function(player)
+	task.wait(0.5)
+
+	if t2.value27 and next(t2.value27) then
+		t2.value8:FireClient(player, "ApplyEQ", t2.value27)
+	end
+
+	local str = tostring(player.UserId)
+	local v504, v505 = t2.value54(t2.value11, str)
+	local v506, v507 = t2.value54(t2.value12, str)
+	local value19 = t2.value19
+	local UserId = player.UserId
+	local v510 = v506 and v507
+
+	if not v510 then
+		v510 = t2.value9.Settings.DefaultVolume
+	end
+
+	value19[UserId] = v510
+
+	local value18 = t2.value18
+	local UserId7 = player.UserId
+	local v513 = v504 and v505
+
+	if not v513 then
+		v513 = {}
+	end
+
+	value18[UserId7] = v513
+	t2.value8:FireClient(player, "SetVolume", t2.value19[player.UserId])
+
+	local v514 = t2.value18[player.UserId]
+
+	t2.value8:FireClient(player, "UpdateFavorites", v514)
+	t2.value8:FireClient(player, "UpdateQueue", t2.value16)
+	t2.value8:FireClient(player, "AutoPlay", t2.value26)
+	t2.value8:FireClient(player, "DJMode", t2.value21)
+
+	if #t2.value31 > 0 then
+		t2.value8:FireClient(player, "SyncDynamicSongs", t2.value31)
+	end
+
+	if t2.value17 then
+		local v515 = "rbxassetid://" .. tostring(t2.value17.ID)
+
+		t2.value8:FireClient(player, "PreloadSound", v515)
+		task.spawn(function()
+			local v589 = os.clock() + (t2.value9.Settings.SongLoadTimeout or 5)
+
+			repeat
+				task.wait(0.2)
+
+				local v590 = t2.value36.IsLoaded and (t2.value36.TimeLength or 0) > 0
+
+				if not v590 then
+					v590 = v589 <= os.clock()
+				end
+			until v590
+
+			if not (player and player.Parent) then
+				return
+			end
+
+			if not t2.value17 then
+				return
+			end
+
+			local TimeLength = t2.value36.TimeLength
+			local PlaybackSpeed = t2.value36.PlaybackSpeed
+
+			if not PlaybackSpeed or PlaybackSpeed <= 0 then
+				PlaybackSpeed = 1
+			end
+
+			local value8 = t2.value8
+			local v594 = player
+			local ID = t2.value17.ID
+			local value17Name = t2.value17.Name
+			local Creator = t2.value17.Creator
+			local value36TimePosition = t2.value36.TimePosition
+
+			value8:FireClient(v594, "NewSong", {
+				ID = ID,
+				Name = value17Name,
+				Duration = TimeLength,
+				EffectiveDuration = TimeLength / PlaybackSpeed,
+				Creator = Creator or "Unknown",
+				PlaybackSpeed = PlaybackSpeed,
+				TimePosition = value36TimePosition or 0,
+				Cover = t2.value17.Cover
+			})
+		end)
+	end
+end)
+t2.value1.PlayerRemoving:Connect(function(player)
+	if t2.value23 == player.UserId then
+		t2.value23 = nil
+		t2.value24 = nil
+		t2.value22 = false
+		t2.value65.A = false
+		t2.value65.B = false
+
+		for _, v in ipairs({
+			"A",
+			"B"
+			}) do
+			local v519 = t2.value49(v)
+
+			v519:Stop()
+			v519.TimePosition = 0
+		end
+
+		local Pads = t2.value37:FindFirstChild("Pads")
+
+		if Pads then
+			Pads:ClearAllChildren()
+		end
+
+		t2.value8:FireAllClients("DeckPowerState", {
+			Enabled = false,
+			Owner = nil
+		})
+		t2.value20 = false
+		task.defer(t2.value60)
+	end
+
+	local v521 = false
+	local n8 = 1
+
+	while n8 <= #t2.value16 do
+		if t2.value16[n8].Requester == player.Name then
+			table.remove(t2.value16, n8)
+			v521 = true
+		else
+			n8 += 1
+		end
+	end
+
+	if v521 then
+		t2.value8:FireAllClients("UpdateQueue", t2.value16)
+	end
+
+	local str = tostring(player.UserId)
+
+	pcall(t2.value11.SetAsync, t2.value11, str, t2.value18[player.UserId])
+
+	local _pcall = pcall
+	local SetAsync = t2.value12.SetAsync
+	local value19 = t2.value19
+	local UserId = player.UserId
+
+	_pcall(SetAsync, t2.value12, str, value19[UserId])
+
+	local UserId8 = player.UserId
+
+	t2.value30[UserId8] = nil
+
+	local UserId9 = player.UserId
+
+	t2.value18[UserId9] = nil
+
+	local UserId10 = player.UserId
+
+	t2.value19[UserId10] = nil
+
+	local UserId11 = player.UserId
+
+	t2.value28[UserId11] = nil
+
+	for _, v in pairs(t2.value66) do
+		if not v.finished then
+			v.responded[player.UserId] = true
+		end
+	end
+
+	if t2.value66[player.UserId] then
+		t2.value66[player.UserId] = nil
+	end
+
+	if t2.value35.Voters then
+		t2.value35.Voters[player.UserId] = nil
+	end
+end)
+t2.value36.Ended:Connect(t2.value60)
+task.spawn(function()
+	while true do
+		task.wait(5)
+
+		local v534 = not t2.value22
+
+		if v534 then
+			v534 = not t2.value36.IsPlaying and not t2.value20
+		end
+
+		if v534 and (#t2.value16 > 0 or t2.value26) then
+			t2.value60()
+		end
+	end
+end)
+task.spawn(function()
+	task.wait(2)
+	t2.value57()
+	t2.value59()
+
+	if #t2.value31 > 0 then
+		t2.value8:FireAllClients("SyncDynamicSongs", t2.value31)
+	end
+
+	task.wait(1)
+	t2.value60()
+end)
