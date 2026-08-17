@@ -1,0 +1,114 @@
+import base64
+import random
+
+def obfuscate(text, secret_key="KUNCI_RAHASIA_PRODUK"):
+    if not text:
+        return ""
+        
+    # 1. Random Salt Numerik (4 digit) -> Hasil acakan selalu beda tiap run
+    salt_num = random.randint(1000, 9999)
+    salt_bytes = str(salt_num).encode('utf-8')
+    
+    text_bytes = text.encode('utf-8')
+    key_bytes = secret_key.encode('utf-8')
+    
+    # Encrypt Salt (4 byte) pakai secret_key
+    encrypted_salt = bytearray()
+    for i in range(len(salt_bytes)):
+        encrypted_salt.append(salt_bytes[i] ^ key_bytes[i % len(key_bytes)])
+        
+    # Encrypt Text Utama: XOR + Secret Key + Salt + Position Shift (Matematika posisi)
+    encrypted_text = bytearray()
+    for i in range(len(text_bytes)):
+        k_char = key_bytes[(i + len(salt_bytes)) % len(key_bytes)]
+        s_char = salt_bytes[i % len(salt_bytes)]
+        pos_shift = (i * 17 + 33) % 256  # Algoritma pergeseran numerik karakter
+        
+        scrambled = text_bytes[i] ^ k_char ^ s_char ^ pos_shift
+        encrypted_text.append(scrambled)
+        
+    combined = encrypted_salt + encrypted_text
+    
+    # 2. Encode ke Base64 URL-safe
+    b64_str = base64.urlsafe_b64encode(combined).decode('utf-8')
+    
+    # 3. Numeric Checksum (Verifikasi Keaslian Key)
+    checksum = sum(combined) % 9999
+    
+    # Format Key Abstrak Gabungan (Numerik + Base64 + Checksum)
+    return f"KEY-{salt_num}-{b64_str}-{checksum:04d}"
+
+def deobfuscate(obfuscated_text, secret_key="KUNCI_RAHASIA_PRODUK"):
+    try:
+        # Parsing format KEY-[SALT_NUM]-[B64_DATA]-[CHECKSUM]
+        parts = obfuscated_text.strip().split('-')
+        if len(parts) != 4 or parts[0] != "KEY":
+            return "[ERROR] Format Key tidak valid!"
+            
+        salt_num_str = parts[1]
+        b64_str = parts[2]
+        checksum_expected = int(parts[3])
+        
+        combined = base64.urlsafe_b64decode(b64_str)
+        
+        # Validasi Checksum Numerik (Anti-Tamper)
+        if sum(combined) % 9999 != checksum_expected:
+            return "[ERROR] Key rusak atau pernah diubah secara paksa!"
+            
+        key_bytes = secret_key.encode('utf-8')
+        encrypted_salt = combined[:4]
+        encrypted_text = combined[4:]
+        
+        # Dekripsi Salt Numerik
+        salt_bytes = bytearray()
+        for i in range(len(encrypted_salt)):
+            salt_bytes.append(encrypted_salt[i] ^ key_bytes[i % len(key_bytes)])
+            
+        # Jika Secret Key salah, decode salt tidak akan cocok dengan header
+        if salt_bytes.decode('utf-8') != salt_num_str:
+            return "[ERROR] Secret Key salah atau Key tidak valid!"
+            
+        # Dekripsi Teks Asli
+        original_bytes = bytearray()
+        for i in range(len(encrypted_text)):
+            k_char = key_bytes[(i + len(salt_bytes)) % len(key_bytes)]
+            s_char = salt_bytes[i % len(salt_bytes)]
+            pos_shift = (i * 17 + 33) % 256
+            
+            original_byte = encrypted_text[i] ^ k_char ^ s_char ^ pos_shift
+            original_bytes.append(original_byte)
+            
+        return original_bytes.decode('utf-8')
+    except Exception:
+        return "[ERROR] Gagal memproses key! Secret key salah atau format rusak."
+
+# ==========================================
+# PROGRAM UTAMA 
+# ==========================================
+print("=== ADVANCED KEY OBFUSCATOR ===")
+print("Ketik 'exit' untuk berhenti.\n")
+
+while True:
+    print("-" * 45)
+    print("1. Buat Key Abstrak (Obfuscate)")
+    print("2. Cek Key Asli (De-obfuscate)")
+    print("3. Keluar Program")
+    
+    pilihan = input("Pilih menu (1/2/3): ")
+    
+    if pilihan == '3' or pilihan.lower() == 'exit':
+        print("Sistem dihentikan.")
+        break
+        
+    elif pilihan == '1':
+        teks_asli = input("Masukkan key asli (misal: PRODUCTANTILUA): ")
+        hasil = obfuscate(teks_asli)
+        print(f"\n[+] Key Abstrak Baru : {hasil}\n")
+        
+    elif pilihan == '2':
+        teks_abstrak = input("Masukkan key abstrak : ")
+        hasil = deobfuscate(teks_abstrak)
+        print(f"\n[+] Hasil De-obfuscate: {hasil}\n")
+        
+    else:
+        print("\n[!] Pilihan tidak valid, coba lagi.\n")
